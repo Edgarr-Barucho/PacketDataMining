@@ -6,7 +6,7 @@ from scapy.all import *
 
 picture_directory="./pics"
 face_directory="./face"
-pcap_file="./arper.pcap"
+pcap_file="./autoSniff.pcap"
 
 nSession=1
 
@@ -63,8 +63,6 @@ def extract_image(headers, content):
 
 def http_assembler(pcap_file):
 
-	carved_images = 0
-	faces_detected = 0
 
 	a=rdpcap(pcap_file)
 	sessions = a.sessions()
@@ -83,38 +81,42 @@ def http_assembler(pcap_file):
 
 
 			try :
-				if packet[TCP].dport == 80 or packet[TCP].sport == 80 :
-					http_payload=bytes(packet[TCP].payload)
-					print("=======================================================================")
-					print( "packet Tcp raw :\n"+ str(http_payload))
-					h = get_http_header(bytes(http_payload))
-					print("\n\nheader : \n"+str(h))
-					if headers is None : headers = h
-					content += http_payload[http_payload.index(b"\r\n\r\n")+4:]
-					print("\n\ncontent : \n"+str(content))
-					# print(type(packet[TCP].payload))
-					# print(bytes(packet[TCP].payload))
-					# http_payload+=str(packet[TCP].payload)#, encoding="utf-8")
-					#, encoding="utf-8")
-					# print(http_payload) 
-			except :
-				pass
+				packet.show()
+			# 	if packet[TCP].dport == 80 or packet[TCP].sport == 80 :
+			# 		http_payload=bytes(packet[TCP].payload)
+			# 		print("=======================================================================")
+			# 		print( "packet Tcp raw :\n"+ str(http_payload))
+			# 		h = get_http_header(bytes(http_payload))
+			# 		print("\n\nheader : \n"+str(h))
+			# 		if headers is None : headers = h
+			# 		if h is None :
+			# 			content += http_payload
+			# 		else : 
+			# 			content += http_payload[http_payload.index(b"\r\n\r\n")+4:]
+			# 		print("\n\ncontent : \n"+str(content,encoding="utf-8"))
+			# 		# print(type(packet[TCP].payload))
+			# 		# print(bytes(packet[TCP].payload))
+			# 		# http_payload+=str(packet[TCP].payload)#, encoding="utf-8")
+			# 		#, encoding="utf-8")
+			# 		# print(http_payload) 
+			# except :
+			# 	pass
 
 		# print(http_payload)
 		# headers = get_http_header(http_payload)
 
-		if headers is None :
-			continue
-		image, image_type = extract_image(headers, content)
-		if image is not None and image_type is not None : 
-			file_name = pcap_file+"-pic_carver_"+str(carved_images)+"."+str(image_type)
-			fd = open(picture_directory+"/"+file_name,"wb")
-			# print(image)
-			fd.write(image)
-			fd.close()
-			carved_images+=1
-			k+=1
-	return carved_images
+	# 	if headers is None :
+	# 		continue
+	# 	image, image_type = extract_image(headers, content)
+	# 	if image is not None and image_type is not None : 
+	# 		file_name = pcap_file+"-pic_carver_"+str(carved_images)+"."+str(image_type)
+	# 		fd = open(picture_directory+"/"+file_name,"wb")
+	# 		# print(image)
+	# 		fd.write(image)
+	# 		fd.close()
+	# 		carved_images+=1
+	# 		k+=1
+	# return carved_images
  
 
 
@@ -133,5 +135,6 @@ def http_session_assembler(session):
 	return http_payload
 
 
-carved_images= http_assembler(pcap_file)
-print("extracted "+str(carved_images)+" images")
+# carved_images= 
+http_assembler(pcap_file)
+# print("extracted "+str(carved_images)+" images")
